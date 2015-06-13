@@ -1,21 +1,10 @@
+__author__ = 'moyiz'
+
 from math import sin, pi
 from itertools import cycle, islice, izip, chain
 import wave
 import struct
 import copy
-
-
-def write_wave(samples, nchannels=1, sample_width=2, framerate=44100,
-               nframes=-1):
-    w = wave.open("hello.wav", "w")
-    nframes = framerate * 5
-    w.setparams((nchannels, sample_width, framerate, nframes,
-                 'NONE', 'not compressed'))
-    max_amp = float(2 ** (sample_width * 7)) - 1
-    data = ''.join(''.join(struct.pack('h', max_amp * s) for s in channel) for channel in samples)
-    w.writeframesraw(data)
-    w.close()
-    return data
 
 
 class Wave(object):
@@ -99,9 +88,9 @@ class WaveFile(object):
         return izip(*self._channels)
 
 
-a = SineWave(freq=440, rate=44100, amp=1).duration(1)
-c = SineWave(freq=262.0, rate=44100, amp=1).duration(1)
-e = SineWave(freq=329.0, rate=44100, amp=1).duration(2)
+a = SineWave(freq=440, rate=44100, amp=0.5).duration(1)
+c = SineWave(freq=262.0, rate=44100, amp=0.5).duration(1)
+e = SineWave(freq=329.0, rate=44100, amp=0.5).duration(2)
 left = Channel([a, c])
 right = Channel([e])
 w = WaveFile([left.generator, right.generator], 2)

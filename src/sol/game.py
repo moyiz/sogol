@@ -1,3 +1,5 @@
+__author__ = 'moyiz'
+
 import random
 
 
@@ -47,13 +49,20 @@ class Board(object):
     def get_cells(self):
         """
         Returns a list of relevant cells (living and their neighbours).
-        
+
         :return: List(int, int)
         """
         cells = self._board.keys()
         for x, y in self._board.keys():
             cells += Board.get_neighs(x, y)
         return cells
+
+    def get_living_cells(self):
+        """
+        Returns a list of coords of the living cells in the board
+        :return: List(int, int)
+        """
+        return self._board.keys()
 
     def set_cell(self, x, y, alive=True):
         """
