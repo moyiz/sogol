@@ -1,32 +1,32 @@
 __author__ = 'moyiz'
 
-from math import sin, pi
-from itertools import cycle, islice, izip, chain
 import wave
 import struct
 import copy
+from math import sin, pi
+from itertools import cycle, islice, izip, chain
 
 
 class Wave(object):
     def __init__(self, gen):
         self._gen = gen
-        
+
     def wave(self):
         return self._gen
-        
+
     def __add__(self, y):
         return Wave(i + j for i, j in izip(self.wave(), y.wave()))
 
     def __sub__(self, y):
         return Wave(i - j for i, j in izip(self.wave(), y.wave()))
-    
+
     def __iter__(self):
         return self.wave()
 
     def duration(self, seconds=1):
         raise NotImplementedError
-    
-    
+
+
 class SineWave(Wave):
     def __init__(self, freq, rate, amp):
         self._freq = freq
@@ -36,7 +36,7 @@ class SineWave(Wave):
         self._cache = {}
         self._seconds = 0
         super(SineWave, self).__init__(self._wave())
-        
+
     def _wave(self):
         return (self._calc(i) for i in cycle(xrange(self._period)))
 
@@ -45,7 +45,7 @@ class SineWave(Wave):
             self._cache[t] = self._amp * sin(2 * pi * self._freq *
                                              (float(t) / self._rate))
         return self._cache[t]
-    
+
     def duration(self, seconds=1):
         return islice(cycle(self.wave()), self._rate * seconds)
 
@@ -73,8 +73,8 @@ class WaveFile(object):
 
     def dump(self, filename, framerate=44100, seconds=0):
         w = wave.open(filename, "w")
-        w.setparams((self._nchannels, self._swidth, framerate, seconds * framerate,
-                    'NONE', 'not compressed'))
+        w.setparams((self._nchannels, self._swidth, framerate,
+                     seconds * framerate, 'NONE', 'not compressed'))
         max_amp = float(2 ** (self._swidth * 7)) - 1
         data = ''.join(''.join(struct.pack('h', max_amp * s) for s in channel)
                        for channel in self._samples())
