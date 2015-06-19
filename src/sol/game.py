@@ -77,6 +77,12 @@ class Board(object):
         self._board[(x, y)] = alive
 
     def get_cell(self, x, y):
+        """
+        Returns the status of a cell.
+
+        :return: True for a living cell or False for a dead one.
+        :rtype: bool
+        """
         if (x, y) not in self._board:
             return False
         return True
