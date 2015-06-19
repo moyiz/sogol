@@ -20,7 +20,7 @@ class SoundOfLife(object):
         board = self.game.board.get_living_cells()
         sounds = []
         for x, y in board:
-            sounds.append(SineWave(440 + x * 30, 44100, self._normalize(y)).duration(0.2))
+            sounds.append(SineWave(440 + (12 ** 0.5) ** x, 44100, self._normalize(y)).duration(0.2))
         c1 = Channel(sounds[:len(sounds) / 2])
         c2 = Channel(sounds[len(sounds) / 2:])
         w = WaveFile([c1.generator, c2.generator], 2)
