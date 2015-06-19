@@ -1,5 +1,3 @@
-__author__ = 'moyiz'
-
 import time
 import os
 from uuid import uuid1

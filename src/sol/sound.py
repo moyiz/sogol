@@ -1,5 +1,3 @@
-__author__ = 'moyiz'
-
 import wave
 import struct
 import copy
