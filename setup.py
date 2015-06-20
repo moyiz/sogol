@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sogol",
-    vesion="0.1",
+    version="0.1",
     packages=find_packages(),
     scripts=['sogolife.py'],
     author="moyiz",
