@@ -2,8 +2,8 @@ import time
 import os
 from uuid import uuid1
 
-from sogol.game import Game
-from sogol.sound import *
+from game import Game
+from sound import *
 
 
 class SoundOfLife(object):
