@@ -1,5 +1,6 @@
 import time
 import os
+import pyglet
 from uuid import uuid1
 
 from game import Game
@@ -47,7 +48,7 @@ class SoundOfLife(object):
         :type wav: str
         :return: None
         """
-        os.system("mplayer {}".format(wav))
+        pyglet.media.load(wav).play()
 
     def start(self, delay=0.5):
         """

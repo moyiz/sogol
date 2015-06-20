@@ -11,5 +11,6 @@ setup(
     description="Sound of game of life.",
     license="BSD",
     keywords="gol sol game of life sound of life",
+    install_requires=['pyglet'],
     url=""
 )
