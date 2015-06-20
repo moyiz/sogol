@@ -14,16 +14,20 @@ class SoundOfLife(object):
 
     Use `start` to listen to The Sound Of Life.
     """
-    def __init__(self):
+    def __init__(self, cells=7, range_x=3, range_y=3):
         """
         Receives a number of cells to generate randomly.
 
         :param cells: The number of cells to generate.
         :type cells: int
+        :param range_x: The minimum x coord to randomize cells from.
+        :type range_x: int
+        :param range_y: The minimum y coord to randomize cells from.
+        :type range_y: int
         :return: None
         """
         self.game = Game()
-        self.game.fill_random(3, 3, 7)
+        self.game.fill_random(range_x, range_y, cells)
 
     def single_turn(self):
         """
