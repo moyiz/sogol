@@ -2,8 +2,8 @@ import time
 import os
 from uuid import uuid1
 
-from game import Game
-from sound import *
+from sogol.game import Game
+from sogol.sound import *
 
 
 class SoundOfLife(object):
@@ -93,7 +93,3 @@ class SoundOfLife(object):
         if x == 0:
             return 0
         return (high - low) / x
-
-
-if __name__ == '__main__':
-    pass
