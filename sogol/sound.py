@@ -2,7 +2,7 @@ import wave
 import struct
 import copy
 from math import sin, pi
-from itertools import cycle, islice, izip, chain
+from itertools import cycle, islice, chain
 
 """
 An usage example:
@@ -30,10 +30,10 @@ class Wave(object):
         return self._gen
 
     def __add__(self, y):
-        return Wave(i + j for i, j in izip(self.wave(), y.wave()))
+        return Wave(i + j for i, j in zip(self.wave(), y.wave()))
 
     def __sub__(self, y):
-        return Wave(i - j for i, j in izip(self.wave(), y.wave()))
+        return Wave(i - j for i, j in zip(self.wave(), y.wave()))
 
     def __iter__(self):
         return self.wave()
@@ -60,7 +60,7 @@ class SineWave(Wave):
         self._freq = freq
         self._rate = rate
         self._amp = amp
-        self._period = int(float(rate) / freq)
+        self._period = int(rate / freq)
         self._cache = {}
         self._seconds = 0
         super(SineWave, self).__init__(self._wave())
@@ -69,7 +69,7 @@ class SineWave(Wave):
         """
         Returns a generator for the wave
         """
-        return (self._calc(i) for i in cycle(xrange(self._period)))
+        return (self._calc(i) for i in cycle(range(self._period)))
 
     def _calc(self, t):
         """
@@ -90,7 +90,7 @@ class SineWave(Wave):
         :return: A generator that generates a `seconds` length wave.
         :rtype: generator
         """
-        return islice(cycle(self.wave()), self._rate * seconds)
+        return islice(cycle(self.wave()), int(self._rate * seconds))
 
 
 class Channel(object):
@@ -151,10 +151,10 @@ class WaveFile(object):
         w.setparams((self._nchannels, self._swidth, framerate,
                      seconds * framerate, 'NONE', 'not compressed'))
         max_amp = float(2 ** (self._swidth * 7)) - 1
-        data = ''.join(''.join(struct.pack('h', max_amp * s) for s in channel)
-                       for channel in self._samples())
+        data = b''.join(b''.join(struct.pack('h', int(max_amp * s)) for s in channel)
+                        for channel in self._samples())
         w.writeframesraw(data)
         w.close()
 
     def _samples(self):
-        return izip(*self._channels)
+        return zip(*self._channels)

@@ -1,1 +1,1 @@
-from sogol import SoundOfLife
+from .sogol import SoundOfLife

@@ -17,7 +17,7 @@ class Game(object):
         :type cells: int
         :return: None
         """
-        for _ in xrange(cells):
+        for _ in range(cells):
             self.board.set_cell(random.randint(0, max_x),
                                 random.randint(0, max_y))
 
@@ -50,7 +50,7 @@ class Board(object):
 
         :return: List(int, int)
         """
-        cells = self._board.keys()
+        cells = list(self._board.keys())
         for x, y in self._board.keys():
             cells += Board.get_neighs(x, y)
         return cells
@@ -98,8 +98,8 @@ class Board(object):
         :type y: int
         :return: List(int, int)
         """
-        return [(i, j) for i in xrange(x - 1, x + 2)
-                for j in xrange(y - 1, y + 2)
+        return [(i, j) for i in range(x - 1, x + 2)
+                for j in range(y - 1, y + 2)
                 if (i, j) != (x, y)]
 
     def count_living_neigh(self, x, y):
@@ -113,6 +113,6 @@ class Board(object):
         :type y: int
         :return: int
         """
-        return len([1 for i in xrange(x - 1, x + 2)
-                    for j in xrange(y - 1, y + 2)
+        return len([1 for i in range(x - 1, x + 2)
+                    for j in range(y - 1, y + 2)
                     if self.get_cell(i, j) and (i, j) != (x, y)])
