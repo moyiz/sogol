@@ -3,8 +3,8 @@ import os
 import pyglet
 from uuid import uuid1
 
-from game import Game
-from sound import *
+from .game import Game
+from .sound import *
 
 
 class SoundOfLife(object):
@@ -75,8 +75,8 @@ class SoundOfLife(object):
         for x, y in board:
             sounds.append(SineWave(440 + (12 ** 0.5) ** x, 44100,
                           self._normalize(y)).duration(0.2))
-        c1 = Channel(sounds[:len(sounds) / 2])
-        c2 = Channel(sounds[len(sounds) / 2:])
+        c1 = Channel(sounds[:len(sounds) // 2])
+        c2 = Channel(sounds[len(sounds) // 2:])
         w = WaveFile([c1.generator, c2.generator], 2)
         wav_name = str(uuid1())[:10] + '.wav'
         w.dump(wav_name)
