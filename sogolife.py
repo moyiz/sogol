@@ -36,7 +36,10 @@ def argument_parsing():
 def main():
     args = argument_parsing()
     sol = SoundOfLife(args.cells, args.x, args.y)
-    sol.start(args.delay)
+    try:
+        sol.start(args.delay)
+    except KeyboardInterrupt:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
