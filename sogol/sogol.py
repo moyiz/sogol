@@ -15,6 +15,7 @@ class SoundOfLife(object):
 
     Use `start` to listen to The Sound Of Life.
     """
+
     def __init__(self, cells=7, range_x=3, range_y=3):
         """
         Receives a number of cells to generate randomly.
@@ -73,12 +74,15 @@ class SoundOfLife(object):
         board = self.game.board.get_living_cells()
         sounds = []
         for x, y in board:
-            sounds.append(SineWave(440 + (12 ** 0.5) ** x, 44100,
-                          self._normalize(y)).duration(0.2))
-        c1 = Channel(sounds[:len(sounds) // 2])
-        c2 = Channel(sounds[len(sounds) // 2:])
+            sounds.append(
+                SineWave(440 + (12 ** 0.5) ** x, 44100, self._normalize(y)).duration(
+                    0.2
+                )
+            )
+        c1 = Channel(sounds[: len(sounds) // 2])
+        c2 = Channel(sounds[len(sounds) // 2 :])
         w = WaveFile([c1.generator, c2.generator], 2)
-        wav_name = str(uuid1())[:10] + '.wav'
+        wav_name = str(uuid1())[:10] + ".wav"
         w.dump(wav_name)
         return wav_name
 

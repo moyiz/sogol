@@ -18,8 +18,7 @@ class Game(object):
         :return: None
         """
         for _ in range(cells):
-            self.board.set_cell(random.randint(0, max_x),
-                                random.randint(0, max_y))
+            self.board.set_cell(random.randint(0, max_x), random.randint(0, max_y))
 
     def do_turn(self):
         """
@@ -30,11 +29,15 @@ class Game(object):
         """
         new_board = Board()
         for x, y in self.board.get_cells():
-            if self.board.get_cell(x, y) and \
-               self.board.count_living_neigh(x, y) in [2, 3]:
+            if self.board.get_cell(x, y) and self.board.count_living_neigh(x, y) in [
+                2,
+                3,
+            ]:
                 new_board.set_cell(x, y)
-            elif not self.board.get_cell(x, y) and \
-                 self.board.count_living_neigh(x, y) == 3:
+            elif (
+                not self.board.get_cell(x, y)
+                and self.board.count_living_neigh(x, y) == 3
+            ):
                 new_board.set_cell(x, y)
         self.board = new_board
         return new_board
@@ -98,9 +101,12 @@ class Board(object):
         :type y: int
         :return: List(int, int)
         """
-        return [(i, j) for i in range(x - 1, x + 2)
-                for j in range(y - 1, y + 2)
-                if (i, j) != (x, y)]
+        return [
+            (i, j)
+            for i in range(x - 1, x + 2)
+            for j in range(y - 1, y + 2)
+            if (i, j) != (x, y)
+        ]
 
     def count_living_neigh(self, x, y):
         """
@@ -113,6 +119,11 @@ class Board(object):
         :type y: int
         :return: int
         """
-        return len([1 for i in range(x - 1, x + 2)
-                    for j in range(y - 1, y + 2)
-                    if self.get_cell(i, j) and (i, j) != (x, y)])
+        return len(
+            [
+                1
+                for i in range(x - 1, x + 2)
+                for j in range(y - 1, y + 2)
+                if self.get_cell(i, j) and (i, j) != (x, y)
+            ]
+        )

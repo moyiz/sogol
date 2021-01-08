@@ -23,6 +23,7 @@ class Wave(object):
     Waves are based on generators.
     Provides an implementation of addition and substraction of waves.
     """
+
     def __init__(self, gen):
         self._gen = gen
 
@@ -46,6 +47,7 @@ class SineWave(Wave):
     """
     A sine wave.
     """
+
     def __init__(self, freq, rate, amp):
         """
         Create a sine wave out of the parameters.
@@ -77,8 +79,9 @@ class SineWave(Wave):
         Uses a cache mechanism for optimizations.
         """
         if t not in self._cache:
-            self._cache[t] = self._amp * sin(2 * pi * self._freq *
-                                             (float(t) / self._rate))
+            self._cache[t] = self._amp * sin(
+                2 * pi * self._freq * (float(t) / self._rate)
+            )
         return self._cache[t]
 
     def duration(self, seconds=1):
@@ -98,6 +101,7 @@ class Channel(object):
     Used to represent a channel.
     Contains a list of wave to produce a chain.
     """
+
     def __init__(self, waves=list()):
         self._waves = waves
 
@@ -125,6 +129,7 @@ class WaveFile(object):
     """
     A wave file.
     """
+
     def __init__(self, channels, sample_width):
         """
         :param channels: A list of channel.
@@ -148,11 +153,21 @@ class WaveFile(object):
         :type seconds: int or float
         """
         w = wave.open(filename, "w")
-        w.setparams((self._nchannels, self._swidth, framerate,
-                     seconds * framerate, 'NONE', 'not compressed'))
+        w.setparams(
+            (
+                self._nchannels,
+                self._swidth,
+                framerate,
+                seconds * framerate,
+                "NONE",
+                "not compressed",
+            )
+        )
         max_amp = float(2 ** (self._swidth * 7)) - 1
-        data = b''.join(b''.join(struct.pack('h', int(max_amp * s)) for s in channel)
-                        for channel in self._samples())
+        data = b"".join(
+            b"".join(struct.pack("h", int(max_amp * s)) for s in channel)
+            for channel in self._samples()
+        )
         w.writeframesraw(data)
         w.close()
 
