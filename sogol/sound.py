@@ -1,57 +1,21 @@
-import wave
 import struct
-import copy
-from math import sin, pi
-from itertools import cycle, islice, chain
+from abc import abstractmethod
+from itertools import chain, cycle, islice
+from math import pi, sin
+from typing import Generator, Iterable
 
-"""
-An usage example:
-
-a = SineWave(freq=440, rate=44100, amp=0.5).duration(1)
-c = SineWave(freq=262.0, rate=44100, amp=0.5).duration(1)
-e = SineWave(freq=329.0, rate=44100, amp=0.5).duration(2)
-left = Channel([a, c])
-right = Channel([e])
-w = WaveFile([left.generator, right.generator], 2)
-w.dump("bah.wav")
-"""
+from simpleaudio import play_buffer
 
 
-class Wave(object):
+class Wave:
     """
     Base class for waves.
     Waves are based on generators.
     Provides an implementation of addition and substraction of waves.
     """
 
-    def __init__(self, gen):
-        self._gen = gen
-
-    def wave(self):
-        return self._gen
-
-    def __add__(self, y):
-        return Wave(i + j for i, j in zip(self.wave(), y.wave()))
-
-    def __sub__(self, y):
-        return Wave(i - j for i, j in zip(self.wave(), y.wave()))
-
-    def __iter__(self):
-        return self.wave()
-
-    def duration(self, seconds=1):
-        raise NotImplementedError
-
-
-class SineWave(Wave):
-    """
-    A sine wave.
-    """
-
-    def __init__(self, freq, rate, amp):
+    def __init__(self, freq: int, rate: int, amp: float):
         """
-        Create a sine wave out of the parameters.
-
         :param freq: The frequency of the wave.
         :type freq: int or float
         :param rate: The frame rate of the wave.
@@ -59,60 +23,59 @@ class SineWave(Wave):
         :param amp: The amplitude of the wave.
         :type amp: int or float
         """
-        self._freq = freq
-        self._rate = rate
-        self._amp = amp
-        self._period = int(rate / freq)
+        self.freq = freq
+        self.rate = rate
+        self.amp = amp
         self._cache = {}
-        self._seconds = 0
-        super(SineWave, self).__init__(self._wave())
 
-    def _wave(self):
-        """
-        Returns a generator for the wave
-        """
-        return (self._calc(i) for i in cycle(range(self._period)))
+    def __iter__(self):
+        return (
+            self._cached_position(i) for i in cycle(range(int(self.rate / self.freq)))
+        )
 
-    def _calc(self, t):
-        """
-        Calculates the value of the wave at the specific index.
-        Uses a cache mechanism for optimizations.
-        """
+    def _cached_position(self, t):
         if t not in self._cache:
-            self._cache[t] = self._amp * sin(
-                2 * pi * self._freq * (float(t) / self._rate)
-            )
+            self._cache[t] = self.position(t)
         return self._cache[t]
 
-    def duration(self, seconds=1):
+    @abstractmethod
+    def position(self, t):
+        """
+        Get a specific position `t` in wave.
+        """
+        pass
+
+    def duration(self, seconds: int = 1) -> Generator:
         """
         Returns a wave in length of the specified seconds.
 
-        :param seconds: The amount of time for the wave.
-        :type seconds: int or float
         :return: A generator that generates a `seconds` length wave.
-        :rtype: generator
         """
-        return islice(cycle(self.wave()), int(self._rate * seconds))
+        return islice(cycle(iter(self)), int(self.rate * seconds))
 
 
-class Channel(object):
+class SineWave(Wave):
+    def position(self, t) -> float:
+        return self.amp * sin(2 * pi * self.freq * (t / self.rate))
+
+
+class SquareWave(Wave):
+    def position(self, t) -> float:
+        return self.amp * (-1) ** int(2 * self.freq * (t / self.rate))
+
+
+class SawtoothWave(Wave):
+    def position(self, t) -> float:
+        return self.amp * (t * self.freq / self.rate) - (t * self.freq // self.rate)
+
+
+class Channel:
     """
-    Used to represent a channel.
-    Contains a list of wave to produce a chain.
+    Chains a list of waves.
     """
 
-    def __init__(self, waves=list()):
-        self._waves = waves
-
-    def add(self, wav):
-        """
-        Add a wave into the channel.
-
-        :param wav: The wave to add.
-        :type wav: Wave
-        """
-        self._waves.append(copy.deepcopy(wav))
+    def __init__(self, waves: Iterable = None):
+        self._waves = waves or []
 
     def __iter__(self):
         return self._waves
@@ -125,51 +88,28 @@ class Channel(object):
         return chain(*self._waves)
 
 
-class WaveFile(object):
+class Player:
     """
     A wave file.
     """
 
-    def __init__(self, channels, sample_width):
-        """
-        :param channels: A list of channel.
-        :type channels: list(Channel)
-        :param sample_width: The width of the sound
-        :type sample_width: int
-        """
+    def __init__(self, channels, sample_width, framerate: int = 44100):
         self._channels = channels
-        self._nchannels = len(channels)
         self._swidth = sample_width
+        self._framerate = framerate
 
-    def dump(self, filename, framerate=44100, seconds=0):
-        """
-        Dumps the content of this instance's channels into a file.
-
-        :param filename: The name of the file to create.
-        :type filename: str
-        :param framerate: The frame rate to use (default: 44100)
-        :type framerate: int
-        :param seconds: The amount of seconds to dump.
-        :type seconds: int or float
-        """
-        w = wave.open(filename, "w")
-        w.setparams(
-            (
-                self._nchannels,
-                self._swidth,
-                framerate,
-                seconds * framerate,
-                "NONE",
-                "not compressed",
-            )
-        )
+    def play(
+        self,
+    ):
         max_amp = float(2 ** (self._swidth * 7)) - 1
         data = b"".join(
-            b"".join(struct.pack("h", int(max_amp * s)) for s in channel)
-            for channel in self._samples()
+            b"".join(struct.pack("h", int(max_amp * sample)) for sample in channel)
+            for channel in zip(*self._channels)
         )
-        w.writeframesraw(data)
-        w.close()
 
-    def _samples(self):
-        return zip(*self._channels)
+        play_buffer(
+            audio_data=data,
+            num_channels=len(self._channels),
+            bytes_per_sample=self._swidth,
+            sample_rate=self._framerate,
+        ).wait_done()
