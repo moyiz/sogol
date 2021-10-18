@@ -65,14 +65,3 @@ See [CONTRIBUTING.md](https://github.com/moyiz/sogol/blob/master/CONTRIBUTING.md
 
 ## License
 [BSD 3-Clause](https://github.com/moyiz/sogol/blob/master/LICENSE)
-
-
-
-
-TODO:
-Go with github action or circleci (travis is no longer freemium)
-Check testing different python versions
-Refactor Wave class (duck typing operators)
-Add another wave type and wave selector
-Check controlling balance instead of volume
-Add scales
