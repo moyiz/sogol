@@ -25,7 +25,7 @@ $ poetry run sogol
 
 ### Local `pip`
 ```sh
-$ git clone https://github.com/moyiz/sogol.git && cd sogoljj
+$ git clone https://github.com/moyiz/sogol.git && cd sogol
 $ pip install .
 $ sogol
 ```
