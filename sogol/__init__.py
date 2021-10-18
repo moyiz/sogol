@@ -28,7 +28,6 @@ wave_map = {"sine": SineWave, "square": SquareWave, "sawtooth": SawtoothWave}
 
 def main():
     args = docopt(__doc__)
-    print(args)
     if args["--from-json"]:
         with open(args["--from-json"]) as fp:
             board = tuple(tuple(cell) for cell in json.load(fp))

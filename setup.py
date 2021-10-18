@@ -26,8 +26,8 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "Intended Audience :: Other Audience",
-        "Intended Audience :: Science/Research"
-        "Programming Language :: Python :: 3 :: Only"
+        "Intended Audience :: Science/Research",
+        "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
