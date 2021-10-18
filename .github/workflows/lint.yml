@@ -1,5 +1,5 @@
 name: Lint & Formatting
-on: [push, pull_request]
+on: [pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -14,4 +14,4 @@ jobs:
       - name: Run linter
         run: flake8 --ignore=E501,W503
       - name: Run formatter check
-        run: black --check
+        run: black --check .
