@@ -2,9 +2,6 @@ name: Lint & Formatting
 on: [push, pull_request]
 jobs:
   lint:
-    strategy:
-      fail-fast: false
-      matrix:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
