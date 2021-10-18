@@ -7,3 +7,4 @@ dist/
 *.egg-info*
 .code/
 .vscode/
+.pytest_cache/
