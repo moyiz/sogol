@@ -1,13 +1,15 @@
+import json
 from functools import lru_cache
 from itertools import product
 from random import randint
 from typing import Dict, Tuple
 
-from .sound import Channel, Player, SineWave, Wave
+from .sound import Channel, SineWave, Wave, play
 
 Cell = Tuple[int, int]
 Board = Tuple[Cell]
 ExpandedBoard = Dict[Cell, bool]
+LexiconBoard = str
 
 
 class BoardBuilder:
@@ -18,8 +20,17 @@ class BoardBuilder:
         )
 
     @staticmethod
-    def from_lexicon(board: str):
-        raise NotImplementedError
+    def from_lexicon(lexicon_board: LexiconBoard) -> Board:
+        return tuple(
+            (x, y)
+            for y, row in enumerate(lexicon_board.strip().split()[::-1])
+            for x, cell in enumerate(row)
+            if cell in "oO*"
+        )
+
+    @staticmethod
+    def from_json(json_board: str) -> Board:
+        return tuple(tuple(cell) for cell in json.loads(json_board))
 
 
 class GameOfLife:
@@ -73,11 +84,11 @@ class SoundOfLife(GameOfLife):
         """
         Plays the given board and returns the next generation.
         """
-        cls.generate_sound(living_cells, wave).play()
+        cls.generate_sound(living_cells, wave)
         return super().do_turn(living_cells)
 
     @classmethod
-    def generate_sound(cls, board: Board, wave: Wave) -> Player:
+    def generate_sound(cls, board: Board, wave: Wave):
         sounds = [
             wave(
                 freq=440 + (12 ** 0.5) ** x,
@@ -89,7 +100,7 @@ class SoundOfLife(GameOfLife):
         lower_mid = len(sounds) // 2
         c1 = Channel(sounds[:lower_mid])
         c2 = Channel(sounds[lower_mid:])
-        return Player([c1.generator, c2.generator], 2)
+        play(channels=[c1.generator, c2.generator], sample_width=2)
 
     @staticmethod
     def _normalize(x, low=-1, high=1) -> float:

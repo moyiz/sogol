@@ -2,7 +2,7 @@ import struct
 from abc import abstractmethod
 from itertools import chain, cycle, islice
 from math import pi, sin
-from typing import Generator, Iterable
+from typing import Generator, Iterable, List
 
 from simpleaudio import play_buffer
 
@@ -88,28 +88,16 @@ class Channel:
         return chain(*self._waves)
 
 
-class Player:
-    """
-    A wave file.
-    """
+def play(channels: List[Channel], sample_width: int, framerate: int = 44100):
+    max_amp = float(2 ** (sample_width * 7)) - 1
+    data = b"".join(
+        b"".join(struct.pack("h", int(max_amp * sample)) for sample in channel)
+        for channel in zip(*channels)
+    )
 
-    def __init__(self, channels, sample_width, framerate: int = 44100):
-        self._channels = channels
-        self._swidth = sample_width
-        self._framerate = framerate
-
-    def play(
-        self,
-    ):
-        max_amp = float(2 ** (self._swidth * 7)) - 1
-        data = b"".join(
-            b"".join(struct.pack("h", int(max_amp * sample)) for sample in channel)
-            for channel in zip(*self._channels)
-        )
-
-        play_buffer(
-            audio_data=data,
-            num_channels=len(self._channels),
-            bytes_per_sample=self._swidth,
-            sample_rate=self._framerate,
-        ).wait_done()
+    return play_buffer(
+        audio_data=data,
+        num_channels=len(channels),
+        bytes_per_sample=sample_width,
+        sample_rate=framerate,
+    ).wait_done()
