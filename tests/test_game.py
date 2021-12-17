@@ -17,6 +17,19 @@ def test_generate_random_board(max_column, max_row, max_cells):
 
 
 @pytest.mark.parametrize(
+    "lexicon,expected_board",
+    (
+        ("..O\n..O\n..O", ((2, 0), (2, 1), (2, 2))),
+        ("   ..O   \n..O \n    ..O", ((2, 0), (2, 1), (2, 2))),
+        ("\t..O   \n    ..O \n    ..O", ((2, 0), (2, 1), (2, 2))),
+    ),
+)
+def test_from_lexicon(lexicon, expected_board):
+    board = BoardBuilder.from_lexicon(lexicon)
+    assert board == expected_board
+
+
+@pytest.mark.parametrize(
     "board,turns,result",
     (
         # - to |
