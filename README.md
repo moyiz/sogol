@@ -96,4 +96,4 @@ See [CONTRIBUTING.md](https://github.com/moyiz/sogol/blob/master/CONTRIBUTING.md
 [BSD 3-Clause](https://github.com/moyiz/sogol/blob/master/LICENSE)
 
 ## Version
-0.2.0-alpha
+0.3.0

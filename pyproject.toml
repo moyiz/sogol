@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sogol"
-version = "0.2.0-alpha"
+version = "0.3.0"
 description = "Sound of Game of Life."
 homepage = "https://github.com/moyiz/sogol"
 repository = "https://github.com/moyiz/sogol"
