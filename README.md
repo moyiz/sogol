@@ -31,22 +31,55 @@ $ sogol
 ```
 
 ## Usage
-By default, it will randomly generate 7 cells within a 3x3 matrix, and play each generation with a delay of 0.5 seconds. 
+By default, it will randomly generate up to 7 cells within a 3x3 matrix, and play each generation with a delay of 0.5 seconds. 
 ```
 Sound of Game of Life.
 Listen to an audio interpretation of each generation.
 
 Usage:
     sogol [--max-column=X] [--max-row=Y] [--cells=N] [-d DELAY] [-w WAVE]
-    sogol (--from-json=PATH|--from-string=BOARD) [-d DELAY] [-w WAVE]
+    sogol (--from-lexicon=PATH|--from-json=PATH) [-d DELAY] [-w WAVE]
 
 Options:
-    -x NUM, --max-column=NUM   Maximum column of randomly generated cells [default: 3]
-    -y NUM, --max-row=NUM      Maximum row of randomly generated cells [default: 3]
-    -c CELLS, --cells=CELLS    Maximum number of cells to randomly generate [default: 7]
-    -j FILE, --from-json=FILE  Load board from JSON file
-    -d DELAY, --delay=DELAY    Delay in seconds between each generation [default: 0.5]
-    -w (sine|square|sawtooth)  Select a wave to generate [default: sine]
+    -x NUM, --max-column=NUM  Maximum column of randomly generated cells [default: 3]
+    -y NUM, --max-row=NUM     Maximum row of randomly generated cells [default: 3]
+    -c CELLS, --cells=CELLS   Maximum number of cells to randomly generate [default: 7]
+    --from-json=PATH          Load a JSON file or stdin (-)
+    --from-lexicon=PATH       Load a lexicon formatted file or stdin (-)
+    -d DELAY, --delay=DELAY   Delay in seconds between each generation [default: 0.5]
+    -w (sine|square|sawtooth) Select a wave to generate [default: sine]
+```
+
+## Life Lexicon
+`sogol` supports loading patterns in [Life Lexicon](https://conwaylife.com/ref/lexicon/lex.htm) format. The notations are:
+*  `.` (_dot_) - empty cell.
+* `O` (_lower_ or _capital_) or `*` (_asterik_) - living cell.
+
+For example, to load the [_R2D2_](https://conwaylife.com/ref/lexicon/lex_r.htm) pattern:
+```bash
+sogol --from-lexicon - << EOF
+	.....O.....
+	....O.O....
+	...O.O.O...
+	...O.O.O...
+	OO.O...O.OO
+	OO.O...O.OO
+	...O...O...
+	...O.O.O...
+	....O.O....
+	.....O.....
+EOF
+```
+
+Or the [_Sidewalk_](https://conwaylife.com/ref/lexicon/lex_s.htm) pattern:
+```bash
+sogol -w sawtooth --from-lexicon - << EOF
+	.OO.OO
+	..O.O.
+	.O..O.
+	.O.O..
+	OO.OO.
+EOF
 ```
 
 ## Motivation
